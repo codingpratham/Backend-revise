@@ -1,7 +1,11 @@
 const http = require("http")
 
 const server =  http.createServer((req,res)=>{
-    res.end("Hello World")
+    if(req.url === "/about"){
+        res.end("about page")
+    }else{
+        res.end("Kuch bhi h bhai")
+    }
 })
 
 server.listen(3000,()=>{
