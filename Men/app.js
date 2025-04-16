@@ -1,15 +1,30 @@
 const express= require("express")
 const app = express()
+const morgan= require("morgan")
+
+app.use(morgan('dev')) // Log requests to the console
+app.use(express.json())
+app.use(express.urlencoded({extended:true}))
+app.use(express.static("public")) // Serve static files from the public directory
 
 app.set('view engine','ejs')
 
+let count=0
+
 app.use((req,res,next)=>{
-    console.log('Middleware 1')
+    count++
+    console.log(`Request number: ${count}`)
+    console.log(`Method: ${req.method}`)
     next()
 })
 
 app.get('/',(req,res)=>{
     res.render('index')
+})
+
+app.post('/get-form-data',(req,res)=>{
+    console.log(req.body);
+    res.send('Form data received')
 })
 
 app.get ('/about',(req,res)=>{
