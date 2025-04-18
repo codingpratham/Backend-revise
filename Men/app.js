@@ -1,6 +1,8 @@
 const express= require("express")
 const app = express()
 const morgan= require("morgan")
+const userModel= require("./models/user.js")
+const dbConnection=require("./config/db.js")
 
 app.use(morgan('dev')) // Log requests to the console
 app.use(express.json())
@@ -38,6 +40,41 @@ app.get ('/contact',(req,res)=>{
 app.get ('/services',(req,res)=>{
     res.send('Services')
 })
+
+app.get('/register',(req,res)=>{
+    res.render('register')
+})
+
+app.post('/register',async(req,res)=>{
+    const {name ,email,password}=req.body
+    if(!name || !email || !password){
+        return res.status(400).send('All fields are required')
+    }
+
+    try {
+        const user = new userModel({
+            username:name ,
+            email,
+            password
+        })
+        await user.save()
+        res.status(201).send('User registered successfully')
+    } catch (error) {
+        console.error(error)
+        return res.status(500).send('Internal server error')
+    }
+})
+
+app.get('/users',async(req,res)=>{
+    try {
+        const users = await userModel.find()
+        res.status(200).json(users)
+    } catch (error) {
+        console.error(error)
+        return res.status(500).send('Internal server error')
+    }
+})
+
 
 app.listen(3000,()=>{
     console.log('Server is running on port 3000')
