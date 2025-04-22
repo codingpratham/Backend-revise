@@ -75,6 +75,31 @@ app.get('/users',async(req,res)=>{
     }
 })
 
+app.put("/update",async(req,res)=>{
+
+    const update =await userModel.findOneAndUpdate({
+        username:"Pratham"
+    },{
+        email:"c@c.com"
+    })
+    
+    if(!update){
+        return res.status(404).send('User not found')
+    }
+    res.status(200).send('User updated successfully')
+})
+
+app.delete("/delete",async(req,res)=>{
+
+    const deleted =await userModel.findOneAndDelete({
+        username:"Pratham"
+    })
+
+    if(!deleted){
+        return res.status(404).send('User not found')
+    }
+    res.status(200).send('User deleted successfully')
+})
 
 app.listen(3000,()=>{
     console.log('Server is running on port 3000')
