@@ -2,6 +2,7 @@ const express = require('express');
 const db = require('./config/db.js');
 const router = require('./routes/index.js'); // Your main router
 
+
 const app = express();
 
 // ✅ Middleware order matters

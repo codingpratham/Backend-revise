@@ -1,6 +1,7 @@
 const express = require('express');
 const User = require('../models/user.model.js');
 const router = express.Router();
+const bcrypt = require('bcrypt');
 
 // GET register form (optional if you're using forms)
 router.get('/register', (req, res) => {
@@ -29,7 +30,14 @@ router.post('/register', async (req, res) => {
     return res.status(400).json({ message: 'User already exists' });
   }
 
-  const user = await User.create({ username, email, password });
+  const hashedPassword = await bcrypt.hash(password, 10);
+  if (!hashedPassword) {
+    return res.status(500).json({ message: 'Error hashing password' });
+  }
+
+  const user = await User.create(
+    { username, email, password: hashedPassword },
+  );
 
   if (!user) {
     return res.status(400).json({ message: 'User not created' });
